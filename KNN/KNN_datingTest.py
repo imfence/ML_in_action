@@ -72,9 +72,10 @@ def clfPerson():
     iceCream = float(input("liters of ice cream consumed per year?"))
     datngDataMat, datingLabels = file2matrix('datingTestSet.txt')
     normMat, ranges, minVals = autoNorm(datngDataMat)
-    inArr = np.array([percentTats,ffMiles,iceCream])
-    norminArr=(inArr-minVals)/ranges
-    clfResult=KNN_0.classify0(norminArr,normMat,datingLabels,3)
-    print("you will probably like this person:",resultList[clfResult-1])
+    inArr = np.array([percentTats, ffMiles, iceCream])
+    norminArr = (inArr-minVals)/ranges
+    clfResult = KNN_0.classify0(norminArr, normMat, datingLabels, 3)
+    print("you will probably like this person:", resultList[clfResult-1])
+
 
 clfPerson()
