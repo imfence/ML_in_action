@@ -66,5 +66,15 @@ def datingClassTest():
 # datingClassTest()
 
 def clfPerson():
-    resultList = ['not at all','in small doses','in large doses']
-    percentTats=
+    resultList = ['not at all', 'in small doses', 'in large doses']
+    percentTats = float(input("percentage of time spent playing video games?"))
+    ffMiles = float(input("frequent flier miles earned per year?"))
+    iceCream = float(input("liters of ice cream consumed per year?"))
+    datngDataMat, datingLabels = file2matrix('datingTestSet.txt')
+    normMat, ranges, minVals = autoNorm(datngDataMat)
+    inArr = np.array([percentTats,ffMiles,iceCream])
+    norminArr=(inArr-minVals)/ranges
+    clfResult=KNN_0.classify0(norminArr,normMat,datingLabels,3)
+    print("you will probably like this person:",resultList[clfResult-1])
+
+clfPerson()
