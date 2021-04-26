@@ -22,13 +22,13 @@ def splitDataSet(dataSet, axis, value):
     for featVec in dataSet:
         if featVec[axis] == value:
             reducedFeatVec = featVec[:axis]
-            reducedFeatVec.extend[axis+1:]
+            reducedFeatVec.extend(featVec[axis+1:])
             retDataset.append(reducedFeatVec)
     return retDataset
 
 
 def chooseBestFeatureToSplit(dataSet):
-    numFeatures = len(dataSet[0]-1)
+    numFeatures = len(dataSet[0])-1
     baseEntropy = calShannonEnt(dataSet)
     bestInfoGain = 0.0
     bestFeature = -1
@@ -38,7 +38,7 @@ def chooseBestFeatureToSplit(dataSet):
         newEntropy = 0.0
         for value in uniqueVals:
             subDataSet = splitDataSet(dataSet, i, value)
-            prob = len(subDataSet)/len(float(dataSet))
+            prob = len(subDataSet)/float(len(dataSet))
             newEntropy += prob*calShannonEnt(subDataSet)
         infoGain = baseEntropy-newEntropy
         if(infoGain > bestInfoGain):
@@ -60,4 +60,30 @@ def majorityCnt(classList):
 
 def createTree(dataSet,labels):
     classList = [example[-1] for example in dataSet]
-    
+    if classList.count(classList[0]) == len(classList):
+        return classList[0]
+    if len(dataSet[0])==1:
+        return majorityCnt(classList)
+    bestFeat=chooseBestFeatureToSplit(dataSet)
+    bestFeatLabel=labels[bestFeat]
+    myTree = {bestFeatLabel:{}}
+    del(labels[bestFeat])
+    featValues =[example[bestFeat] for example in dataSet]
+    uniqueVals = set(featValues)
+    for value in uniqueVals:
+        subLabels = labels[:]
+        myTree[bestFeatLabel][value]=createTree(splitDataSet(dataSet,bestFeat,value),subLabels)
+    return myTree
+
+def createDataSet():
+    dataSet = [[1,1,'yes'],
+               [1,1,'yes'],
+               [1,0,'no'],
+               [0,1,'no'],
+               [0,1,'no']]
+    labels = ['no surfacing','flippers']
+    return dataSet,labels
+
+myDat,labels=createDataSet()
+myTree=createTree(myDat,labels)
+print(myTree)
