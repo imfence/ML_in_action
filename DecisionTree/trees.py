@@ -109,4 +109,19 @@ def classify(inputTree, featLabels, testVec):
 """ firstStr = list(myTree.keys())[0]
 print(firstStr) """
 #print(labels)
-print(classify(myTree, labels, [0,0]))
+#print(classify(myTree, labels, [0,0]))
+
+def storeTree(inputTree,filename):
+    import pickle
+    with open(filename,'wb') as fw:
+        pickle.dump(inputTree, fw)
+
+storeTree(myTree, 'DecisionTreeStorage.txt')
+
+def grabTree(filename):
+    import pickle
+    with open(filename,'rb') as fr:
+        return(pickle.load(fr))
+
+a=grabTree('DecisionTreeStorage.txt')
+print(a)
