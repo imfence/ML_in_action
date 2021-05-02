@@ -53,37 +53,60 @@ def majorityCnt(classList):
         if vote not in classCount.keys():
             classCount[vote] = 0
         classCount[vote] += 1
-        sortedClassCount = sorted(
-            classCount.items(), key=lambda x: x[1], reverse=True)
+    sortedClassCount = sorted(
+        classCount.items(), key=lambda x: x[1], reverse=True)
     return sortedClassCount[0][0]
 
 
-def createTree(dataSet,labels):
+def createTree(dataSet, labels):
     classList = [example[-1] for example in dataSet]
     if classList.count(classList[0]) == len(classList):
         return classList[0]
-    if len(dataSet[0])==1:
+    if len(dataSet[0]) == 1:
         return majorityCnt(classList)
-    bestFeat=chooseBestFeatureToSplit(dataSet)
-    bestFeatLabel=labels[bestFeat]
-    myTree = {bestFeatLabel:{}}
+    bestFeat = chooseBestFeatureToSplit(dataSet)
+    bestFeatLabel = labels[bestFeat]
+    myTree = {bestFeatLabel: {}}
     del(labels[bestFeat])
-    featValues =[example[bestFeat] for example in dataSet]
+    featValues = [example[bestFeat] for example in dataSet]
     uniqueVals = set(featValues)
     for value in uniqueVals:
         subLabels = labels[:]
-        myTree[bestFeatLabel][value]=createTree(splitDataSet(dataSet,bestFeat,value),subLabels)
+        myTree[bestFeatLabel][value] = createTree(
+            splitDataSet(dataSet, bestFeat, value), subLabels)
     return myTree
 
-def createDataSet():
-    dataSet = [[1,1,'yes'],
-               [1,1,'yes'],
-               [1,0,'no'],
-               [0,1,'no'],
-               [0,1,'no']]
-    labels = ['no surfacing','flippers']
-    return dataSet,labels
 
-myDat,labels=createDataSet()
-myTree=createTree(myDat,labels)
-print(myTree)
+def createDataSet():
+    dataSet = [[1, 1, 'yes'],
+               [1, 1, 'yes'],
+               [1, 0, 'no'],
+               [0, 1, 'no'],
+               [0, 1, 'no']]
+    labels = ['no surfacing', 'flippers']
+    return dataSet, labels
+
+
+myDat, labels = createDataSet()
+labelx=labels.copy()
+myTree = createTree(myDat, labelx)
+#print(myTree)
+
+
+def classify(inputTree, featLabels, testVec):
+    firstStr = list(inputTree.keys())[0]
+    secondDict = inputTree[firstStr]
+    featIndex = featLabels.index(firstStr)
+    for key in secondDict.keys():
+        if testVec[featIndex] == key:
+            if type(secondDict[key]).__name__ == 'dict':
+                classLabel = classify(secondDict[key], featLabels, testVec)
+            else:
+                classLabel = secondDict[key]
+    return classLabel
+
+
+""" firstStr = list(myTree.keys())[0]
+print(firstStr) """
+#print(labels)
+print(classify(myTree, labels, [0,0]))
