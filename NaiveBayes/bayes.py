@@ -56,6 +56,8 @@ def trainNB0(trainMatrix, trainCategory):
 def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
     p1 = reduce(lambda x, y: x*y, vec2Classify * p1Vec) * (pClass1)
     p0 = reduce(lambda x, y: x*y, vec2Classify * p0Vec) * (1.0 - pClass1)
+    #print(p1)
+    #print(p0)
     if p1 > p0:
         return 1
     else:
