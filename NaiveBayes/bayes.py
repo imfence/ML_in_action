@@ -79,14 +79,14 @@ def testingNB():
     print(testEntry, 'classified as: ', classifyNB(thisDoc, p0V, p1V, pAb))
 
 
-"""   
+ 
 def bagOfWords2VecMN(vocabList, inputSet):
     returnVec = [0]*len(vocabList)
     for word in inputSet:
         if word in vocabList:
             returnVec[vocabList.index(word)] += 1
     return returnVec
-
+"""
 def textParse(bigString):    #input is big string, #output is word list
     import re
     listOfTokens = re.split(r'\W*', bigString)
