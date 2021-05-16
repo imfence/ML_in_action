@@ -48,14 +48,14 @@ def trainNB0(trainMatrix, trainCategory):
             p0Denom += sum(trainMatrix[i])
     # print(p1Denom)
     # print(p0Denom)
-    p1Vect = p1Num/p1Denom
-    p0Vect = p0Num/p0Denom
+    p1Vect = np.log(p1Num/p1Denom)
+    p0Vect = np.log(p0Num/p0Denom)
     return p0Vect, p1Vect, pAbusive
 
 
 def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
-    p1 = reduce(lambda x, y: x*y, vec2Classify * p1Vec) * (pClass1)
-    p0 = reduce(lambda x, y: x*y, vec2Classify * p0Vec) * (1.0 - pClass1)
+    p1 = sum(vec2Classify * p1Vec) + np.log(pClass1)
+    p0 = sum(vec2Classify * p0Vec) * np.log(1.0 - pClass1)
     #print(p1)
     #print(p0)
     if p1 > p0:
@@ -77,17 +77,16 @@ def testingNB():
     testEntry = ['stupid', 'garbage']
     thisDoc = np.array(setOfWords2Vec(myVocabList, testEntry))
     print(testEntry, 'classified as: ', classifyNB(thisDoc, p0V, p1V, pAb))
-
-
  
+
 def bagOfWords2VecMN(vocabList, inputSet):
     returnVec = [0]*len(vocabList)
     for word in inputSet:
         if word in vocabList:
             returnVec[vocabList.index(word)] += 1
     return returnVec
-"""
-def textParse(bigString):    #input is big string, #output is word list
+
+def textParse(bigString):
     import re
     listOfTokens = re.split(r'\W*', bigString)
     return [tok.lower() for tok in listOfTokens if len(tok) > 2] 
@@ -103,27 +102,27 @@ def spamTest():
         docList.append(wordList)
         fullText.extend(wordList)
         classList.append(0)
-    vocabList = createVocabList(docList)#create vocabulary
-    trainingSet = range(50); testSet=[]           #create test set
+    vocabList = createVocabList(docList)
+    trainingSet = list(range(50)); testSet=[]
     for i in range(10):
-        randIndex = int(random.uniform(0,len(trainingSet)))
+        randIndex = int(np.random.uniform(0,len(trainingSet)))
+        print(randIndex)
         testSet.append(trainingSet[randIndex])
         del(trainingSet[randIndex])  
     trainMat=[]; trainClasses = []
-    for docIndex in trainingSet:#train the classifier (get probs) trainNB0
+    for docIndex in trainingSet:
         trainMat.append(bagOfWords2VecMN(vocabList, docList[docIndex]))
         trainClasses.append(classList[docIndex])
-    p0V,p1V,pSpam = trainNB0(array(trainMat),array(trainClasses))
+    p0V,p1V,pSpam = trainNB0(np.array(trainMat),np.array(trainClasses))
     errorCount = 0
-    for docIndex in testSet:        #classify the remaining items
+    for docIndex in testSet:
         wordVector = bagOfWords2VecMN(vocabList, docList[docIndex])
-        if classifyNB(array(wordVector),p0V,p1V,pSpam) != classList[docIndex]:
+        if classifyNB(np.array(wordVector),p0V,p1V,pSpam) != classList[docIndex]:
             errorCount += 1
-            print "classification error",docList[docIndex]
-    print 'the error rate is: ',float(errorCount)/len(testSet)
-    #return vocabList,fullText
-
-def calcMostFreq(vocabList,fullText):
+            print("classification error",docList[docIndex])
+    print('the error rate is: ',float(errorCount)/len(testSet))
+    
+""" def calcMostFreq(vocabList,fullText):
     import operator
     freqDict = {}
     for token in vocabList:
@@ -181,7 +180,7 @@ def getTopWords(ny,sf):
     print "NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**"
     for item in sortedNY:
         print item[0]
-"""
+ """
 
 if __name__ == '__main__':
     """ postingList, classVec = loadDataSet()
@@ -197,4 +196,5 @@ if __name__ == '__main__':
     print('p1V:\n', p1V)
     print('classVec:\n', classVec)
     print('pAb:\n', pAb) """
-    testingNB()
+    #testingNB()
+    spamTest()
